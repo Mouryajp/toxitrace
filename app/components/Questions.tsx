@@ -7,17 +7,17 @@ import { toast } from "sonner"; // Import the toast from sonner
 
 const QUESTIONS = [
   "How often do you feel stressed at work?",
-  // "Do you feel supported by your colleagues and managers?",
-  // "How often do you receive recognition for your work?",
-  // "How engaged do you feel during work hours?",
-  // "Do you feel motivated to complete tasks at work?",
-  // "How often do you experience anxiety related to your job?",
-  // "Do you feel appreciated for the effort you put in?",
-  // "How frequently do you feel overwhelmed by your workload?",
-  // "Do you feel your contributions are valued by your team?",
-  // "How often do you experience burnout symptoms?",
-  // "Are you able to maintain a healthy work-life balance?",
-  // "How satisfied are you with your overall work environment?",
+  "Do you feel supported by your colleagues and managers?",
+  "How often do you receive recognition for your work?",
+  "How engaged do you feel during work hours?",
+  "Do you feel motivated to complete tasks at work?",
+  "How often do you experience anxiety related to your job?",
+  "Do you feel appreciated for the effort you put in?",
+  "How frequently do you feel overwhelmed by your workload?",
+  "Do you feel your contributions are valued by your team?",
+  "How often do you experience burnout symptoms?",
+  "Are you able to maintain a healthy work-life balance?",
+  "How satisfied are you with your overall work environment?",
 ];
 
 const SCALE = [
