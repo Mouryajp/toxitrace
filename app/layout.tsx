@@ -4,6 +4,7 @@ import { ThemeProvider } from "next-themes";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ChatLayout from "./components/ChatLayout";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({
             <Header />
           </div>
           <main className="h-[85vh]"> {children}</main>
+          <Toaster />
           <Footer />
           <ChatLayout />
         </ThemeProvider>

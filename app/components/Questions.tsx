@@ -3,21 +3,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AudioRecorder from "../components/AudioRecorder";
-import { Alert } from "@/components/ui/alert";
+import { toast } from "sonner"; // Import the toast from sonner
 
 const QUESTIONS = [
   "How often do you feel stressed at work?",
-  "Do you feel supported by your colleagues and managers?",
-  "How often do you receive recognition for your work?",
-  "How engaged do you feel during work hours?",
-  "Do you feel motivated to complete tasks at work?",
-  "How often do you experience anxiety related to your job?",
-  "Do you feel appreciated for the effort you put in?",
-  "How frequently do you feel overwhelmed by your workload?",
-  "Do you feel your contributions are valued by your team?",
-  "How often do you experience burnout symptoms?",
-  "Are you able to maintain a healthy work-life balance?",
-  "How satisfied are you with your overall work environment?",
+  // "Do you feel supported by your colleagues and managers?",
+  // "How often do you receive recognition for your work?",
+  // "How engaged do you feel during work hours?",
+  // "Do you feel motivated to complete tasks at work?",
+  // "How often do you experience anxiety related to your job?",
+  // "Do you feel appreciated for the effort you put in?",
+  // "How frequently do you feel overwhelmed by your workload?",
+  // "Do you feel your contributions are valued by your team?",
+  // "How often do you experience burnout symptoms?",
+  // "Are you able to maintain a healthy work-life balance?",
+  // "How satisfied are you with your overall work environment?",
 ];
 
 const SCALE = [
@@ -34,20 +34,6 @@ const Questions = () => {
   const [recordPhase, setRecordPhase] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [alertData, setAlertData] = useState<{
-    variant: "success" | "failure" | "info";
-    title: string;
-    description?: string;
-  } | null>(null);
-
-  useEffect(() => {
-    if (alertData) {
-      const timer = setTimeout(() => {
-        setAlertData(null);
-      }, 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [alertData]);
 
   const handleAnswerSelection = (value: number) => {
     setSelectedAnswer(value);
@@ -69,11 +55,7 @@ const Questions = () => {
 
   const handleSubmit = async () => {
     if (!audioBlob) {
-      setAlertData({
-        variant: "info",
-        title: "Note:",
-        description: "Please complete the voice recording.",
-      });
+      toast.info("Please complete the voice recording."); // Use sonner toast for info
       return;
     }
 
@@ -83,31 +65,16 @@ const Questions = () => {
       formData.append("answers", JSON.stringify(answers));
 
       const response = await axios.post("/api/submitResponse", formData);
-      setAlertData({
-        variant: "success",
-        title: response.data.message || "Submission successful",
-      });
+      toast.success(response.data.message || "Submission successful"); // Use sonner toast for success
       setIsSubmitted(true);
     } catch (err) {
       console.error("Error submitting:", err);
-      setAlertData({
-        variant: "failure",
-        title: "Submission failed.",
-        description: "Sorry for the inconvenience. Please try again.",
-      });
+      toast.error("Submission failed. Sorry for the inconvenience. Please try again."); // Use sonner toast for error
     }
   };
 
   return (
     <div className="xl:text-base lg:text-base md:text-lg sm:text-sm w-full max-w-3xl mx-auto px-6 py-8 text-gray-800 dark:text-gray-200 text-justify space-y-6 border-4 rounded-3xl">
-      {alertData && (
-        <Alert
-          variant={alertData.variant}
-          title={alertData.title}
-          description={alertData.description}
-        />
-      )}
-
       {!isSubmitted ? (
         <>
           {!recordPhase ? (
