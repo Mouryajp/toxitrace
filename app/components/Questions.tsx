@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AudioRecorder from "../components/AudioRecorder";
+import { Alert } from "@/components/ui/alert";
 
 const QUESTIONS = [
   "How often do you feel stressed at work?",
@@ -33,6 +34,20 @@ const Questions = () => {
   const [recordPhase, setRecordPhase] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [alertData, setAlertData] = useState<{
+    variant: "success" | "failure" | "info";
+    title: string;
+    description?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (alertData) {
+      const timer = setTimeout(() => {
+        setAlertData(null);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [alertData]);
 
   const handleAnswerSelection = (value: number) => {
     setSelectedAnswer(value);
@@ -45,7 +60,7 @@ const Questions = () => {
       setSelectedAnswer(null);
 
       if (currentIndex === QUESTIONS.length - 1) {
-        setRecordPhase(true); // done with all questions
+        setRecordPhase(true);
       } else {
         setCurrentIndex((prev) => prev + 1);
       }
@@ -54,7 +69,11 @@ const Questions = () => {
 
   const handleSubmit = async () => {
     if (!audioBlob) {
-      alert("Please complete the voice recording.");
+      setAlertData({
+        variant: "info",
+        title: "Note:",
+        description: "Please complete the voice recording.",
+      });
       return;
     }
 
@@ -64,16 +83,31 @@ const Questions = () => {
       formData.append("answers", JSON.stringify(answers));
 
       const response = await axios.post("/api/submitResponse", formData);
-      alert(response.data.message);
+      setAlertData({
+        variant: "success",
+        title: response.data.message || "Submission successful",
+      });
       setIsSubmitted(true);
     } catch (err) {
       console.error("Error submitting:", err);
-      alert("Submission failed. Try again.");
+      setAlertData({
+        variant: "failure",
+        title: "Submission failed.",
+        description: "Sorry for the inconvenience. Please try again.",
+      });
     }
   };
 
   return (
     <div className="xl:text-base lg:text-base md:text-lg sm:text-sm w-full max-w-3xl mx-auto px-6 py-8 text-gray-800 dark:text-gray-200 text-justify space-y-6 border-4 rounded-3xl">
+      {alertData && (
+        <Alert
+          variant={alertData.variant}
+          title={alertData.title}
+          description={alertData.description}
+        />
+      )}
+
       {!isSubmitted ? (
         <>
           {!recordPhase ? (
@@ -122,8 +156,8 @@ const Questions = () => {
                 Please record the following phrase:
               </p>
               <blockquote className="italic border-l-4 border-blue-600 pl-4 text-blue-400">
-              &quot;The sun was shining brightly, and people were strolling through the park. The trees
-                swayed gently in the breeze, creating a peaceful atmosphere.&quot;
+                &quot;The sun was shining brightly, and people were strolling through the park.
+                The trees swayed gently in the breeze, creating a peaceful atmosphere.&quot;
               </blockquote>
 
               <AudioRecorder
@@ -144,7 +178,9 @@ const Questions = () => {
           )}
         </>
       ) : (
-        <p className="text-xl font-semibold">Thank you for completing the survey and recording!</p>
+        <p className="text-xl font-semibold">
+          Thank you for completing the survey and recording!
+        </p>
       )}
     </div>
   );
