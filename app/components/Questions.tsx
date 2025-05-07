@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import axios from "axios";
 import AudioRecorder from "../components/AudioRecorder";
+import { toast } from "sonner"; // Import the toast from sonner
 
 const QUESTIONS = [
   "How often do you feel stressed at work?",
@@ -45,7 +46,7 @@ const Questions = () => {
       setSelectedAnswer(null);
 
       if (currentIndex === QUESTIONS.length - 1) {
-        setRecordPhase(true); // done with all questions
+        setRecordPhase(true);
       } else {
         setCurrentIndex((prev) => prev + 1);
       }
@@ -54,7 +55,7 @@ const Questions = () => {
 
   const handleSubmit = async () => {
     if (!audioBlob) {
-      alert("Please complete the voice recording.");
+      toast.info("Please complete the voice recording."); // Use sonner toast for info
       return;
     }
 
@@ -64,11 +65,11 @@ const Questions = () => {
       formData.append("answers", JSON.stringify(answers));
 
       const response = await axios.post("/api/submitResponse", formData);
-      alert(response.data.message);
+      toast.success(response.data.message || "Submission successful"); // Use sonner toast for success
       setIsSubmitted(true);
     } catch (err) {
       console.error("Error submitting:", err);
-      alert("Submission failed. Try again.");
+      toast.error("Submission failed. Sorry for the inconvenience. Please try again."); // Use sonner toast for error
     }
   };
 
@@ -122,8 +123,8 @@ const Questions = () => {
                 Please record the following phrase:
               </p>
               <blockquote className="italic border-l-4 border-blue-600 pl-4 text-blue-400">
-              &quot;The sun was shining brightly, and people were strolling through the park. The trees
-                swayed gently in the breeze, creating a peaceful atmosphere.&quot;
+                &quot;The sun was shining brightly, and people were strolling through the park.
+                The trees swayed gently in the breeze, creating a peaceful atmosphere.&quot;
               </blockquote>
 
               <AudioRecorder
@@ -144,7 +145,9 @@ const Questions = () => {
           )}
         </>
       ) : (
-        <p className="text-xl font-semibold">Thank you for completing the survey and recording!</p>
+        <p className="text-xl font-semibold">
+          Thank you for completing the survey and recording!
+        </p>
       )}
     </div>
   );
