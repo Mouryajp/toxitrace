@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import axios from "axios";
 import AudioRecorder from "../components/AudioRecorder";
 import { toast } from "sonner"; // Import the toast from sonner
