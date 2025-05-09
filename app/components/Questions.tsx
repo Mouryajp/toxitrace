@@ -1,9 +1,15 @@
 "use client";
 
-import React, {  useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AudioRecorder from "../components/AudioRecorder";
 import { toast } from "sonner"; // Import the toast from sonner
+
+interface QuestionsProps {
+  occupation: string;
+  age: string;
+  gender: string;
+}
 
 const QUESTIONS = [
   "How often do you feel stressed at work?",
@@ -27,13 +33,20 @@ const SCALE = [
   { value: 3, label: "Nearly every day" },
 ];
 
-const Questions = () => {
+const Questions: React.FC<QuestionsProps> = ({ occupation, age, gender }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [recordPhase, setRecordPhase] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [result, setResult] = useState<{
+    survey_result: string;
+    audio_result: string;
+    finalResult: string;
+  } | null>(null);
+
+  useEffect(() => {}, [result]);
 
   const handleAnswerSelection = (value: number) => {
     setSelectedAnswer(value);
@@ -63,13 +76,43 @@ const Questions = () => {
       const formData = new FormData();
       formData.append("audio", audioBlob, "recording.webm");
       formData.append("answers", JSON.stringify(answers));
+      formData.append("occupation", occupation);
+      formData.append("age", age);
+      formData.append("gender", gender);
 
       const response = await axios.post("/api/submitResponse", formData);
+      let finalResult = "";
+      const { survey_result, audio_result } = response.data;
+      if (
+        survey_result === "Likely mentally ill" &&
+        audio_result === "Depressed"
+      ) {
+        finalResult = "Likely mentally ill";
+      } else if (
+        survey_result === "Likely mentally ill" &&
+        audio_result === "Not Depressed"
+      ) {
+        finalResult = "Possibly mentally ill";
+      } else if (
+        survey_result === "Unlikely mentally ill" &&
+        audio_result === "Depressed"
+      ) {
+        finalResult = "Possibly mentally ill";
+      } else {
+        finalResult = "Mentally healthy";
+      }
+      setResult({
+        survey_result,
+        audio_result,
+        finalResult,
+      });
       toast.success(response.data.message || "Submission successful"); // Use sonner toast for success
       setIsSubmitted(true);
     } catch (err) {
       console.error("Error submitting:", err);
-      toast.error("Submission failed. Sorry for the inconvenience. Please try again."); // Use sonner toast for error
+      toast.error(
+        "Submission failed. Sorry for the inconvenience. Please try again."
+      ); // Use sonner toast for error
     }
   };
 
@@ -83,7 +126,8 @@ const Questions = () => {
                 Please answer the following questions on a scale of 0 to 3:
               </p>
               <p className="italic text-sm">
-                0 - Not at all | 1 - Several days | 2 - More than half the days | 3 - Nearly every day
+                0 - Not at all | 1 - Several days | 2 - More than half the days
+                | 3 - Nearly every day
               </p>
               <p className="text-lg font-medium mt-6">
                 Q{currentIndex + 1}: {QUESTIONS[currentIndex]}
@@ -123,8 +167,9 @@ const Questions = () => {
                 Please record the following phrase:
               </p>
               <blockquote className="italic border-l-4 border-blue-600 pl-4 text-blue-400">
-                &quot;The sun was shining brightly, and people were strolling through the park.
-                The trees swayed gently in the breeze, creating a peaceful atmosphere.&quot;
+                &quot;The sun was shining brightly, and people were strolling
+                through the park. The trees swayed gently in the breeze,
+                creating a peaceful atmosphere.&quot;
               </blockquote>
 
               <AudioRecorder
@@ -145,9 +190,20 @@ const Questions = () => {
           )}
         </>
       ) : (
-        <p className="text-xl font-semibold">
-          Thank you for completing the survey and recording!
-        </p>
+        <>
+          <p className="text-xl font-semibold">
+            Thank you for completing the survey and recording!
+          </p>
+          {result ? (
+            <div className="mt-6 space-y-4">
+              <p className="text-lg font-semibold">
+                You are most {result.finalResult}
+              </p>
+            </div>
+          ) : (
+            "Something went wrong, please try again later."
+          )}
+        </>
       )}
     </div>
   );

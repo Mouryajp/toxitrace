@@ -21,39 +21,18 @@ const UserDetail = () => {
 
   const isFormValid = occupation.trim() && age.trim() && gender.trim();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Create the data object
-    const userDetails = {
+  
+    const query = new URLSearchParams({
       occupation,
       age,
       gender,
-    };
-
-    try {
-      // Sending the user details to the proxy API
-      const response = await fetch("/api/userDetails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userDetails),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log(data.message);
-        // Optionally, redirect after submission
-        router.push("/app/tests/quiz");
-      } else {
-        console.error("Failed to submit details:", data.error);
-      }
-    } catch (error) {
-      console.error("Error submitting details:", error);
-    }
+    }).toString();
+  
+    router.push(`/app/tests/quiz?${query}`);
   };
+  
 
   return (
     <section className="max-h-[85vh] overflow-y-auto flex items-center justify-center pt-6">
