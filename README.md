@@ -1,8 +1,26 @@
-# HarmoniAI - A RAG Chatbot
+# ToxiTrace – Multimodal Mental Well-being Assessor 🧠
 
 ## Introduction
 
-Hello! I'm Mourya JP, and I built this project using the **Next.js** framework along with **DataStax Astra**, **Google AI Studio**, and **LangChain**. This project is a **Retrieval-Augmented Generation (RAG) chatbot** called **HarmoniAI**, designed to provide insightful and supportive responses related to mental health and well-being.
+Hi, I'm Mourya JP. I created ToxiTrace, a cutting-edge tool designed to assess mental well-being using multimodal AI techniques. It analyzes textual inputs, tone, and contextual cues to detect emotional distress, toxicity, and negative sentiment.
+
+ToxiTrace makes mental health support more intelligent, empathetic, and proactive, and it can be integrated into various platforms and applications.
+
+## 🔄 Powered by HarmoniAI – A RAG-Based Chatbot
+
+To showcase ToxiTrace in action, I built HarmoniAI, a Retrieval-Augmented Generation (RAG) chatbot that integrates ToxiTrace to provide thoughtful and context-aware responses to users dealing with mental health challenges.
+
+HarmoniAI is built using:
+
+Next.js
+
+LangChain
+
+DataStax Astra
+
+Google AI Studio
+
+It retrieves relevant knowledge and augments it with AI-generated responses, while ToxiTrace continuously evaluates the emotional quality of interactions, enabling smarter, safer, and more supportive conversations.
 
 ## Getting Started
 

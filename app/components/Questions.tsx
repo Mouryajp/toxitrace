@@ -87,17 +87,17 @@ const Questions: React.FC<QuestionsProps> = ({ occupation, age, gender }) => {
         survey_result === "Likely mentally ill" &&
         audio_result === "Depressed"
       ) {
-        finalResult = "Likely mentally ill";
+        finalResult = " Mentally ill";
       } else if (
         survey_result === "Likely mentally ill" &&
         audio_result === "Not Depressed"
       ) {
-        finalResult = "Possibly mentally ill";
+        finalResult = "Likely mentally ill";
       } else if (
         survey_result === "Unlikely mentally ill" &&
         audio_result === "Depressed"
       ) {
-        finalResult = "Possibly mentally ill";
+        finalResult = "Likely mentally ill";
       } else {
         finalResult = "Mentally healthy";
       }
@@ -198,6 +198,14 @@ const Questions: React.FC<QuestionsProps> = ({ occupation, age, gender }) => {
             <div className="mt-6 space-y-4">
               <p className="text-lg font-semibold">
                 You are most {result.finalResult}
+                {result.finalResult === " Mentally ill" ? (
+                  <>
+                    <span className="text-red-500">
+                      {" "}
+                      (Please consult a mental health professional)
+                    </span>
+                  </>
+                ) : null}
               </p>
             </div>
           ) : (
